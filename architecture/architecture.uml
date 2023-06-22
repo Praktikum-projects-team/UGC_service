@@ -1,0 +1,55 @@
+@startuml
+skinparam maxMessageSize 200
+skinparam sequence {
+ActorFontColor Blue
+ActorFontSize 14
+}
+
+<style>
+componentDiagram {
+BackGroundColor palegreen
+LineThickness 2
+LineColor grey
+}
+</style>
+
+actor пользователь as user  #yellow;line:blue;line.bold;text:blue
+actor админ as admin  #yellow;line:blue;line.bold;text:blue
+
+component "admin_panel - django" as admin_panel #yellow
+component "etl" as etl
+component "movies_api - fastapi/asyncapi" as movies_api #yellow
+component "auth_api - flask" as auth_api #yellow
+component "ugc_api" as ugc_api
+
+component "nginx_1" as nginx_1
+component "nginx_2" as nginx_2
+
+database postgres_user #5cdb7e
+database postgres_admin #5cdb7e
+database redis_1 #5cdb7e
+database redis_2 #5cdb7e
+database elastic #5cdb7e
+database kafka
+
+ugc_api -> kafka
+
+user ..> nginx_1: <font color=blue>входит на сервис</font> 
+user ..> nginx_2: <font color=blue>смотрит кино</font>
+
+nginx_1 ..> auth_api
+nginx_2 ..> movies_api
+etl --> elastic
+
+auth_api -> postgres_user: данные о пользователях
+auth_api --> redis_1: токены и количество запросов
+
+movies_api -> elastic: информация о фильмах
+movies_api --> redis_2: кэш информации о фильмах, жанрах, персонах
+
+movies_api --> auth_api: проверка доступности
+
+admin ..> admin_panel : <font color=blue>добавляет фильмы</font>
+admin_panel -> postgres_admin
+postgres_admin --> etl: переливка данных в индекс для полнотекстового поиска
+@enduml
