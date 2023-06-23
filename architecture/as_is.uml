@@ -18,7 +18,7 @@ actor админ as admin  #yellow;line:blue;line.bold;text:blue
 
 component "admin_panel - django" as admin_panel #yellow
 component "etl" as etl
-component "movies_api - fastapi/asyncapi" as movies_api #yellow
+component "movies_api - fastapi" as movies_api #yellow
 component "auth_api - flask" as auth_api #yellow
 component "ugc_api" as ugc_api
 
