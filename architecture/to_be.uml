@@ -60,5 +60,5 @@ movies_api --> auth_api: проверка доступности
 admin ..> admin_panel : <font color=blue>добавляет фильмы</font>
 admin_panel -> postgres_admin
 postgres_admin --> etl_movies: переливка данных в индекс для полнотекстового поиска
-
+ 
 @enduml
