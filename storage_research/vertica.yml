@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  vertica:
+    image: vertica/vertica-ce:12.0.4-0
+    container_name: vertica_ugc
+    ports:
+      - "5433:5433"
+      - "5444:5444"
+    deploy:
+      mode: global
