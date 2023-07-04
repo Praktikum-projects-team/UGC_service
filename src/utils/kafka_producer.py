@@ -10,7 +10,7 @@ class AbstractProducer(ABC):
     @abstractmethod
     def send(self, topic: str, value: bytes, key: bytes):
         """Метод отправки данных в хранилище"""
-        pass
+        raise NotImplementedError
 
 
 @dataclass
