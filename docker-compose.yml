@@ -28,7 +28,7 @@ services:
 
   auth:
     container_name: auth
-    image: ghcr.io/praktikum-projects-team/auth_api:0.1.2
+    image: ghcr.io/praktikum-projects-team/auth_api:0.1.3
     env_file:
       - envs/auth/.env
     depends_on:
