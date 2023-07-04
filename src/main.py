@@ -19,21 +19,23 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-@asynccontextmanager
-async def lifespan(application: FastAPI):
-    kafka.kafka = AIOKafkaProducer(bootstrap_servers=kafka_config.kafka_server)
-    await kafka.kafka.start()
-    yield
-    await kafka.kafka.stop()
-
-
 app = FastAPI(
     title=app_config.project_name,
     docs_url='/api/openapi',
     openapi_url='/api/openapi.json',
     default_response_class=ORJSONResponse,
-    lifespan=lifespan
 )
+
+
+@app.on_event('startup')
+async def startup():
+    kafka.kafka = AIOKafkaProducer(bootstrap_servers=kafka_config.kafka_server)
+    await kafka.kafka.start()
+
+
+@app.on_event('shutdown')
+async def shutdown():
+    await kafka.kafka.stop()
 
 
 app.include_router(ugc.router, prefix='/api/v1/ugc', tags=['ugc'])

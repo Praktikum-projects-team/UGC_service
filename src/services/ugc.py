@@ -1,7 +1,6 @@
 from fastapi import Depends
 
-from db.kafka import get_event_producer
-from utils.kafka_producer import AbstractEventProducer, KafkaProducer
+from utils.kafka_producer import AbstractEventProducer, KafkaProducer, get_event_producer
 
 
 class EventService:

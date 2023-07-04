@@ -1,5 +1,9 @@
 from abc import ABC, abstractmethod
+
 from aiokafka import AIOKafkaProducer
+from fastapi import Depends
+
+from db.kafka import get_kafka
 
 
 class AbstractEventProducer(ABC):
@@ -31,3 +35,12 @@ class KafkaProducer(AbstractEventProducer):
         :param key: ключ сообщения
         """
         await self.broker.send(topic=topic, value=value, key=key)
+
+
+def get_event_producer(
+        kafka: AIOKafkaProducer = Depends(get_kafka)
+) -> KafkaProducer:
+    """
+    Функция для получения экземпляра KafkaProducer
+    """
+    return KafkaProducer(kafka)
