@@ -1,3 +1,4 @@
+import json
 from http import HTTPStatus
 
 from fastapi import HTTPException
@@ -20,7 +21,8 @@ class AuthApi:
                 headers={self.auth_header_key: self.token_type + ' ' + token, 'X-Request-Id': self.x_request_id},
             )
         if auth_answer.status_code == 200:
-            return auth_answer.json()
+            body = auth_answer.json()
+            return json.loads(body)
         if auth_answer.status_code == HTTPStatus.UNAUTHORIZED:
             raise HTTPException(status_code=401, detail="Invalid token or expired token.")
 
