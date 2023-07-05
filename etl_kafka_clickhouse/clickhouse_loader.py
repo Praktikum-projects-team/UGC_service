@@ -18,6 +18,3 @@ def load_data(transformed_events, table_name: str):
         VALUES {', '.join(data)}''')
 
 
-def check():
-    print(ch_client.execute('select * from default.movie_views'))
-

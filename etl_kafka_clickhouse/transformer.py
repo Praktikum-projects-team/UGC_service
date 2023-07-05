@@ -1,9 +1,7 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 
 from dacite import from_dict
-
-# import timestamp
 
 
 @dataclass
@@ -12,7 +10,6 @@ class MovieViews:
     user_id: str
     view_progress: str
     created_at: str
-    # table_name: str = field(default='movie_views')
 
 
 @dataclass
@@ -28,8 +25,9 @@ class Views:
                           view_progress=self.watch_time, created_at=created_at)
 
 
-topics_tables = {'views': Views}
+topics_tables = {'views': (Views, 'movie_views')}
 
 
 def transform(events: list, topic: str):
-    return [event.transform_to_ch() for event in [from_dict(data_class=topics_tables[topic], data=i) for i in events]]
+    model, table = topics_tables[topic]
+    return table, [event.transform_to_ch() for event in [from_dict(data_class=model, data=i) for i in events]]
