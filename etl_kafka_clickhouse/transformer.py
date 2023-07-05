@@ -1,4 +1,6 @@
 from dataclasses import dataclass, field
+from datetime import datetime
+
 from dacite import from_dict
 
 # import timestamp
@@ -10,7 +12,7 @@ class MovieViews:
     user_id: str
     view_progress: str
     created_at: str
-    table_name: str = field(default='movie_views')
+    # table_name: str = field(default='movie_views')
 
 
 @dataclass
@@ -21,8 +23,9 @@ class Views:
     created_at: str
 
     def transform_to_ch(self):
+        created_at = datetime.fromisoformat(self.created_at).strftime("%Y-%m-%d %H:%M:%S")
         return MovieViews(movie_id=self.film_id, user_id=self.user_id,
-                          view_progress=self.watch_time, created_at=self.created_at)
+                          view_progress=self.watch_time, created_at=created_at)
 
 
 topics_tables = {'views': Views}
