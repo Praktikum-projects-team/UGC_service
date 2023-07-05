@@ -1,5 +1,4 @@
 import logging
-from contextlib import asynccontextmanager
 from http import HTTPStatus
 
 import uvicorn
@@ -29,7 +28,7 @@ app = FastAPI(
 
 @app.on_event('startup')
 async def startup():
-    kafka.kafka = AIOKafkaProducer(bootstrap_servers=kafka_config.kafka_server)
+    kafka.kafka = AIOKafkaProducer(bootstrap_servers=f'{kafka_config.broker_host}:{kafka_config.broker_port}')
     await kafka.kafka.start()
 
 
