@@ -15,13 +15,3 @@ httpx==0.24.1
 python-dotenv==1.0.0
 aiokafka==0.8.1
 kafka-python==2.0.2
-
-kafka-python==2.0.2
-pydantic==1.10.7
-gunicorn==20.1.0
-fastapi==0.63.0
-orjson==3.8.10
-uvicorn==0.12.2
-uvloop==0.17.0 ; sys_platform != "win32" and implementation_name == "cpython"
-httptools==0.5.0
-aiokafka==0.8.1
