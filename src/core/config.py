@@ -20,9 +20,6 @@ class AuthConfig(BaseSettings):
 
 
 class KafkaConfig(BaseSettings):
-    # host: str = Field(..., env='KAFKA_HOST')
-    # port: int = Field(..., env='KAFKA_PORT')
-
     kafka_server: str = Field(env='KAFKA_SERVER')
     kafka_topic: str = Field('views', env='KAFKA_TOPIC')
 
