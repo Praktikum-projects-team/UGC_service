@@ -4,7 +4,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, Request
 
 from api.v1.auth.auth_bearer import BaseJWTBearer
-from api.v1.models.ugc import EventWatchResp, EventWatch
+from api.v1.models.ugc import EventWatch, EventWatchResp
 from core.config import kafka_config
 from services.auth_api import AuthApi
 from services.ugc import EventService, get_event_service
@@ -23,7 +23,7 @@ async def event_handler(
         body: EventWatch,
         request: Request,
         event_service: EventService = Depends(get_event_service)
-):
+) -> EventWatchResp:
     """
     Отправляем временную метку unix timestamp, соответствующую текущему месту просмотра фильма пользователем
     """
@@ -36,7 +36,6 @@ async def event_handler(
         "created_at": str(datetime.utcnow())
     }
 
-    # Todo нужно реализовать отправку события в Kafka https://dpaste.org/mrg5U#L3,4
     await event_service.send_event(
         topic=kafka_config.kafka_topic,
         value=bytearray(json.dumps(data_event), 'utf-8'),
