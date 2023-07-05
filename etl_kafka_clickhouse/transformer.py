@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from dacite import from_dict
 
-import timestamp
+# import timestamp
 
 
 @dataclass
@@ -9,7 +9,7 @@ class MovieViews:
     movie_id: str
     user_id: str
     view_progress: str
-    created_at: timestamp
+    created_at: str
     table_name: str = field(default='movie_views')
 
 
