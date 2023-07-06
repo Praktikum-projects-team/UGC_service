@@ -5,7 +5,7 @@ def load_data(ch_client, transformed_events, table_name: str):
     data = []
     table_fields = ', '.join(list(transformed_events[0].__annotations__.keys()))
     for event in transformed_events:
-        data.append(str(astuple(event)))
+        data.append(astuple(event))
     ch_client.execute(
         """INSERT INTO default.{table}
            ({fields})
