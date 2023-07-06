@@ -1,8 +1,4 @@
-import logging
 from dataclasses import astuple
-
-from clickhouse_driver import Client
-from typing import Optional
 
 
 def load_data(ch_client, transformed_events, table_name: str):

@@ -264,5 +264,3 @@ services:
 networks:
   clickhouse_docker:
     external: true
-#  services_api:
-#    driver: bridge
