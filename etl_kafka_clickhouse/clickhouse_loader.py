@@ -13,4 +13,4 @@ def load_data(ch_client, transformed_events, table_name: str):
     ch_client.execute(
         """INSERT INTO default.{table}
            ({fields})
-           VALUES {values}""".format(table=table_name, fields=table_fields, values=', '.join(data)))
+           VALUES""".format(table=table_name, fields=table_fields), data)
