@@ -19,7 +19,8 @@ def connect():
     kafka_consumer = KafkaConsumer(etl_config.kafka_topic,
                                    bootstrap_servers=[etl_config.kafka],
                                    group_id=etl_config.kafka_group_id,
-                                   auto_offset_reset='earliest')
+                                   auto_offset_reset='earliest',
+                                   enable_auto_commit=False)
     kafka_consumer.subscribe(etl_config.kafka_topic)
     ch_client = Client(host=etl_config.clickhouse)
     return kafka_consumer, ch_client
@@ -31,6 +32,7 @@ def load(kafka_consumer, ch_client):
         events = kafka_extractor.extract_data(kafka_consumer)
         ch_table, transformed_data = transform(events, etl_config.kafka_topic)
         clickhouse_loader.load_data(ch_client, transformed_data, ch_table)
+        kafka_consumer.commit()
         time.sleep(etl_config.repeat_time_in_seconds)
 
 
