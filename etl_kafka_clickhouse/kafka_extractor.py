@@ -1,12 +1,8 @@
-from kafka import KafkaConsumer
 from config import etl_config
-from typing import Optional
 import json
 
-consumer: Optional[KafkaConsumer] = None
 
-
-def extract_data():
+def extract_data(consumer):
     events = []
     for message in consumer:
         events.append(json.loads(message.value))

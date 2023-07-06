@@ -16,23 +16,24 @@ logging.basicConfig(level=logging.INFO)
 
 @backoff.on_exception(backoff.expo, (NoBrokersAvailable, NetworkError))
 def connect():
-    kafka_extractor.consumer = KafkaConsumer(etl_config.kafka_topic,
-                                             bootstrap_servers=[etl_config.kafka],
-                                             group_id=etl_config.kafka_group_id,
-                                             auto_offset_reset='earliest')
-    kafka_extractor.consumer.subscribe(etl_config.kafka_topic)
-    clickhouse_loader.ch_client = Client(host=etl_config.clickhouse)
+    kafka_consumer = KafkaConsumer(etl_config.kafka_topic,
+                                   bootstrap_servers=[etl_config.kafka],
+                                   group_id=etl_config.kafka_group_id,
+                                   auto_offset_reset='earliest')
+    kafka_consumer.subscribe(etl_config.kafka_topic)
+    ch_client = Client(host=etl_config.clickhouse)
+    return kafka_consumer, ch_client
 
 
-def load():
+def load(kafka_consumer, ch_client):
     while True:
         logging.info('starting etl')
-        events = kafka_extractor.extract_data()
+        events = kafka_extractor.extract_data(kafka_consumer)
         ch_table, transformed_data = transform(events, etl_config.kafka_topic)
-        clickhouse_loader.load_data(transformed_data, ch_table)
+        clickhouse_loader.load_data(ch_client, transformed_data, ch_table)
         time.sleep(etl_config.repeat_time_in_seconds)
 
 
 if __name__ == '__main__':
-    connect()
-    load()
+    kafka_consumer, ch_client = connect()
+    load(kafka_consumer, ch_client)
