@@ -1,18 +1,20 @@
 import logging
 
-from kafka import KafkaConsumer, errors as kafka_errors
-from clickhouse_driver import Client, errors as ch_errors
+from kafka import KafkaConsumer
+from kafka.errors import NoBrokersAvailable
+from clickhouse_driver import Client
+from clickhouse_driver.errors import NetworkError
 import time
 from config import etl_config
 import kafka_extractor
 from transformer import transform
 import clickhouse_loader
-from utils.backoff import backoff
+import backoff as backoff
 
 logging.basicConfig(level=logging.INFO)
 
 
-@backoff(exceptions=(kafka_errors.NoBrokersAvailable, ch_errors.NetworkError))
+@backoff.on_exception(backoff.expo, (NoBrokersAvailable, NetworkError))
 def connect():
     kafka_extractor.consumer = KafkaConsumer(etl_config.kafka_topic,
                                              bootstrap_servers=[etl_config.kafka],

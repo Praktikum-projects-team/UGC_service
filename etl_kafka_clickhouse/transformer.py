@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from dacite import from_dict
-
 
 @dataclass
 class MovieViews:
@@ -30,4 +28,4 @@ topics_tables = {'views': (Views, 'movie_views')}
 
 def transform(events: list, topic: str):
     model, table = topics_tables[topic]
-    return table, [event.transform_to_ch() for event in [from_dict(data_class=model, data=i) for i in events]]
+    return table, [event.transform_to_ch() for event in [model(**i) for i in events]]
