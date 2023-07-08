@@ -1,5 +1,6 @@
 import json
 import logging
+from http import HTTPStatus
 
 import jwt
 from fastapi import Depends, HTTPException, Request
@@ -26,14 +27,14 @@ class BaseJWTBearer(HTTPBearer):
         credentials: HTTPAuthorizationCredentials = await super(BaseJWTBearer, self).__call__(request)
         if credentials:
             if not credentials.scheme == self.token_type:
-                raise HTTPException(status_code=401, detail="Invalid authentication scheme.")
+                raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid authentication scheme.")
             token_payload = await self.verify_jwt(credentials.credentials, auth_api)
             if not token_payload:
-                raise HTTPException(status_code=403, detail="Invalid token or expired token.")
+                raise HTTPException(status_code=HTTPStatus.FORBIDDEN, detail="Invalid token or expired token.")
             request.token_payload = token_payload
             return credentials.credentials
         else:
-            raise HTTPException(status_code=403, detail="Invalid authorization code.")
+            raise HTTPException(status_code=HTTPStatus.FORBIDDEN, detail="Invalid authorization code.")
 
     def decode_jwt(self, token: str) -> dict:
         try:
