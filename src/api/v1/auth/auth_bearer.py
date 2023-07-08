@@ -8,7 +8,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from httpx import ConnectError
 
 from core.config import auth_config
-from services.auth_api import AuthApi, get_auth_api
+from services.auth import AuthApi, get_auth_api
 
 
 class BaseJWTBearer(HTTPBearer):

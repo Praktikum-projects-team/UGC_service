@@ -3,10 +3,8 @@ services:
   auth_postgres:
     container_name: auth_postgres
     image: "postgres:13"
-    networks:
-      - clickhouse_docker
     env_file:
-      - envs/auth/.env
+      - .env
     volumes:
       - $HOME/postgresql/auth_data:/var/lib/postgresql/auth_api_data
     restart: always
@@ -17,9 +15,7 @@ services:
     container_name: auth_redis
     image: redis:7
     env_file:
-      - envs/auth/.env
-    networks:
-      - clickhouse_docker
+      - .env
     volumes:
       - $HOME/redis/data:/var/lib/redis/data
     ports:
@@ -28,10 +24,8 @@ services:
   auth:
     container_name: auth
     image: ghcr.io/praktikum-projects-team/auth_api:0.1.3
-    networks:
-      - clickhouse_docker
     env_file:
-      - envs/auth/.env
+      - .env
     depends_on:
       - auth_redis
       - auth_postgres
@@ -40,29 +34,17 @@ services:
 
   ugc:
     container_name: ugc
-    build: .
-    networks:
-      - clickhouse_docker
+    build: ..
     env_file:
-      - envs/ugc/.env
+      - .env
     ports:
       - "8001:8001"
-
-  etl:
-    container_name: etl
-    build: etl_kafka_clickhouse
-    networks:
-      - clickhouse_docker
-    env_file:
-      - etl_kafka_clickhouse/.env
 
   nginx:
     image: nginx:latest
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/configs:/etc/nginx/conf.d:ro
-    networks:
-      - clickhouse_docker
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx/configs:/etc/nginx/conf.d:ro
     depends_on:
       - ugc
     ports:
@@ -72,8 +54,6 @@ services:
     image: confluentinc/cp-zookeeper:7.4.0
     hostname: zookeeper
     container_name: kafka_zookeeper
-    networks:
-      - clickhouse_docker
     ports:
       - "2181:2181"
     environment:
@@ -84,8 +64,6 @@ services:
     image: confluentinc/cp-server:7.4.0
     hostname: broker
     container_name: broker
-    networks:
-      - clickhouse_docker
     depends_on:
       - zookeeper
     ports:
@@ -117,8 +95,6 @@ services:
     container_name: schema-registry
     depends_on:
       - broker
-    networks:
-      - clickhouse_docker
     ports:
       - "8081:8081"
     environment:
@@ -130,8 +106,6 @@ services:
     image: cnfldemos/cp-server-connect-datagen:0.5.3-7.1.0
     hostname: connect
     container_name: connect
-    networks:
-      - clickhouse_docker
     depends_on:
       - broker
       - schema-registry
@@ -162,8 +136,6 @@ services:
     image: confluentinc/cp-enterprise-control-center:7.4.0
     hostname: control-center
     container_name: control-center
-    networks:
-      - clickhouse_docker
     depends_on:
       - broker
       - schema-registry
@@ -187,8 +159,6 @@ services:
     image: confluentinc/cp-ksqldb-server:7.4.0
     hostname: ksqldb-server
     container_name: ksqldb-server
-    networks:
-      - clickhouse_docker
     depends_on:
       - broker
       - connect
@@ -211,8 +181,6 @@ services:
   ksqldb-cli:
     image: confluentinc/cp-ksqldb-cli:7.4.0
     container_name: ksqldb-cli
-    networks:
-      - clickhouse_docker
     depends_on:
       - broker
       - connect
@@ -224,8 +192,6 @@ services:
     image: confluentinc/ksqldb-examples:7.4.0
     hostname: ksql-datagen
     container_name: ksql-datagen
-    networks:
-      - clickhouse_docker
     depends_on:
       - ksqldb-server
       - broker
@@ -249,8 +215,6 @@ services:
     depends_on:
       - broker
       - schema-registry
-    networks:
-      - clickhouse_docker
     ports:
       - 8082:8082
     hostname: rest-proxy
@@ -261,6 +225,12 @@ services:
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
-networks:
-  clickhouse_docker:
-    external: true
+  tests:
+    container_name: tests
+    build: .
+    env_file:
+      - .env
+    depends_on:
+      - auth
+      - ugc
+      - broker
