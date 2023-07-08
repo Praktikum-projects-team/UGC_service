@@ -23,9 +23,10 @@ async def make_get_request(aiohttp_session):
 
 @pytest.fixture
 async def make_post_request(aiohttp_session):
-    async def inner(path: str, data: dict = None):
+    async def inner(path: str, data: dict = None, token: str = None):
         url = f'http://{test_settings.api_host}:{test_settings.api_port}' + path
-        async with aiohttp_session.post(url, json=data) as response:
+        headers = {'Authorization': f'Bearer {token}'}
+        async with aiohttp_session.post(url, json=data, headers=headers) as response:
             resp = ApiResponse(status=response.status, body=await response.json())
         return resp
 
