@@ -6,5 +6,5 @@ BASE_URL = '/api/v1'
 UGC_URL = f'{BASE_URL}/ugc'
 
 EVENT_WATCH_URL = f'{UGC_URL}/event_watch'
-AUTH_URL_SIGN_UP = f'{test_settings.auth_host}/sign_up'
-AUTH_URL_LOGIN = f'{test_settings.auth_host}/login'
+AUTH_URL_SIGN_UP = f'{test_settings.auth_host}/api/v1/auth/sign_up'
+AUTH_URL_LOGIN = f'{test_settings.auth_host}/api/v1/auth/login'
