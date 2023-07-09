@@ -20,11 +20,11 @@ class AuthApi:
                 self.token_checking_url,
                 headers={self.auth_header_key: self.token_type + ' ' + token, 'X-Request-Id': self.x_request_id},
             )
-        if auth_answer.status_code == 200:
+        if auth_answer.status_code == HTTPStatus.OK:
             body = auth_answer.json()
             return json.loads(body)
         if auth_answer.status_code == HTTPStatus.UNAUTHORIZED:
-            raise HTTPException(status_code=401, detail="Invalid token or expired token.")
+            raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid token or expired token.")
 
 
 def get_auth_api():

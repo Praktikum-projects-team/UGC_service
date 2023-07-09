@@ -2,8 +2,9 @@
 Отправка событий в Kafka и перенос их в ClickHouse для аналитики
 
 # Запуск
-Перед запуском создать .env файл по .env.example  
-Запуск кликхауса: `cd clickhouse & docker-compose up -d`  
+Перед запуском создать .env файл по .env.example
+Запуск ClickHouse: `cd clickhouse`, `docker-compose up -d`
+Если ClickHouse не нужен, можно создать сеть вручную: `docker network create clickhouse_docker`
 Запуск проекта: `docker-compose up --build`  
 Kafka доступна по адресу: http://localhost:9021 
 

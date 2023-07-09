@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Request
 
 from api.v1.auth.auth_bearer import BaseJWTBearer
 from api.v1.models.ugc import EventWatch, EventWatchResp
-from services.auth_api import AuthApi
+from services.auth import AuthApi
 from services.ugc import EventService, get_event_service
 
 router = APIRouter()
