@@ -20,10 +20,6 @@ async def create_user_default():
 
 @pytest.fixture(scope="session")
 async def user_access_token():
-    j ={
-        'login': UserData.LOGIN,
-        'password': UserData.PASSWORD
-    }
     resp = requests.post(
         AUTH_URL_LOGIN,
         headers={"X-Request-Id": "123"},
@@ -32,9 +28,8 @@ async def user_access_token():
             'password': UserData.PASSWORD
         }
     )
-
     if resp.status_code != HTTPStatus.OK:
-        raise Exception(f'{resp.text} {AUTH_URL_LOGIN} {j}')
+        raise Exception(resp.text)
 
     resp_data = resp.json()
 
