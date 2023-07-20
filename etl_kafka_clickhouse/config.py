@@ -13,4 +13,4 @@ class Config(BaseSettings):
     kafka_data_size: int = Field(100, env='KAFKA_DATA_SIZE')
 
 
-etl_config = Config()
+etl_config = Config()  # type: ignore[call-arg]
