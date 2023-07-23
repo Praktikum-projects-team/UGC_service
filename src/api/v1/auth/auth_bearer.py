@@ -1,6 +1,7 @@
 import json
 import logging
 from http import HTTPStatus
+from typing import Optional
 
 import jwt
 from fastapi import Depends, HTTPException, Request
@@ -24,7 +25,7 @@ class BaseJWTBearer(HTTPBearer):
             request: Request,
             auth_api: AuthApi = Depends(get_auth_api)
     ):
-        credentials: HTTPAuthorizationCredentials | None = await super(BaseJWTBearer, self).__call__(request)
+        credentials: Optional[HTTPAuthorizationCredentials] = await super(BaseJWTBearer, self).__call__(request)
         if credentials:
             if not credentials.scheme == self.token_type:
                 raise HTTPException(status_code=HTTPStatus.UNAUTHORIZED, detail="Invalid authentication scheme.")
