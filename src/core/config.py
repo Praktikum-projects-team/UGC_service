@@ -25,6 +25,6 @@ class KafkaConfig(BaseSettings):
     broker_port: int = Field(env='BROKER_PORT')
 
 
-app_config = AppConfig()
-auth_config = AuthConfig()
-kafka_config = KafkaConfig()
+app_config = AppConfig()  # type: ignore[call-arg]
+auth_config = AuthConfig()  # type: ignore[call-arg]
+kafka_config = KafkaConfig()  # type: ignore[call-arg]
